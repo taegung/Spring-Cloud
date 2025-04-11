@@ -1,0 +1,58 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.10'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'dev.petclinic'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2023.0.5")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'io.asyncer:r2dbc-mysql'
+
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// config 의존성은 임시 제외
+	// implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	// TODO: 클라우드 스트림 - RabbitMQ Binder 의존성 추가
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+
+
+	compileOnly 'org.projectlombok:lombok:1.18.26'
+
+	// Lombok 어노테이션 프로세서 등록
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+	// 테스트 코드에서도 Lombok을 사용하고 싶다면
+	testCompileOnly 'org.projectlombok:lombok:1.18.26'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

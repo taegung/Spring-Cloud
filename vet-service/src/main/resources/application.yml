@@ -1,0 +1,8 @@
+spring :
+  application:
+    name: vet-service #vet-service.yml파일과 매칭
+  config :
+    import : 'optional:configserver:'
+    cloud:
+      config:
+        uri: http://localhost:8888 #congig server의 주소

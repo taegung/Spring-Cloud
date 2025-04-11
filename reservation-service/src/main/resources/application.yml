@@ -1,0 +1,39 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: reservation-service
+
+  r2dbc:
+    username: root
+    password: 1234
+    url: r2dbc:mysql://localhost:3306/petclinic_reservations
+    pool:
+      max-create-connection-time: 2s
+      initial-size: 5
+      max-size: 10
+
+  # spring cloud 관련 설정
+  cloud:
+    function:
+      definition: dispatchReservation #함수명
+    stream: # spring cloud stream 관련 설정
+      bindings:
+        dispatchReservation-in-0:
+          destination: reservation-dispatched
+          group: ${spring.application.name}
+        acceptReservation-out-0: # 출력 바인딩
+          destination: reservation-accepted #바인더를 레빗MQ
+      rabbit: # 스프링 클라우드 스트림 바인딩에 대한 RabbitMQ 설정
+        bindings:
+          acceptReservation-out-0:
+            producer:
+              transacted: true # 트랜잭션 지원 활성화
+        rabbitmq:
+          host: localhost
+          port: 5672
+          username: guest
+          password: guest
+          connection-timeout: 5s
+  

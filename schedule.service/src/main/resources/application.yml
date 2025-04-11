@@ -1,0 +1,23 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: schedule-service
+
+  cloud:
+    function:
+      definition: schedule|confirm   # schedule ?? -> confirm ??
+    stream:
+      bindings:
+        scheduleconfirm-in-0:
+          destination: reservation-accepted
+          group: ${spring.application.name}
+        scheduleconfirm-out-0:  #???? ??? ????? ??
+          destination: reservation-dispatched
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 5s
